@@ -1,0 +1,642 @@
+import os
+import pickle
+from datetime import datetime
+from functools import partial
+import mysql.connector as m
+import tkinter as tk
+from pathlib import Path
+
+# MASTER PASSWORD= HK!RK!   (All Caps)
+# EMPLOYEE PASSWORD= Emp1MallName/Emp2MallName/Emp3MallName/Emp4MallName/Emp5MallName
+# (Note: "Emp" is in lowercase but while typing, (due to the font), everything looks CAPS
+# List Of Malls Used in function[choose_mall_visitor(mallList)]
+mall_list = []
+
+
+def path1():
+    global mall_list
+    path = r"C:\Users\Shreya_Rao3055\PycharmProjects\12th grade project"  # path=directories
+    mall_list1 = []
+    directories = os.listdir(path)  # A list
+    fileExt = r".dat"
+    for file in directories:
+        if file.endswith(fileExt):
+            path1 = r"C:\Users\Shreya_Rao3055\PycharmProjects\12th grade project\{}".format(file)
+            x = Path(path1).stem  # Removes the ".dat" (file extension)
+            mall_list1.append(x)
+    mall_list = mall_list1
+
+
+def Emp_Password(mall_name, entry7):
+    New_Password = []
+
+    Password = ["Emp1", "Emp2", "Emp3", "Emp4", "Emp5"]
+    for i in Password:
+        Pwd = i + mall_name
+        New_Password.append(Pwd)
+    def view():
+        con = m.connect(username='root', password='#Comeparty05', database='project')
+        cur=con.cursor()
+        now= datetime.now()
+        curdt=now.date()
+        string="select * from {} where date='{}' order by co_ordinates;".format(mall_name,curdt)
+        cur.execute(string)
+        info=cur.fetchall()
+        class Table:
+            def __init__(self, window10):
+                # code for creating table
+                for i in range(total_rows):
+                    for j in range(total_columns):
+                        self.e = tk.Entry(window9, width=20, fg='blue', font=('Calisto MT', 16, 'bold'))
+                        self.e.grid(row=i, column=j)
+                        self.e.insert(tk.END, lst_bill[i][j])
+        lst_bill = [("Date", "Car Number", "Co ordinates", "Entry Time", "Exit Time")]
+        for i in info:
+            lst_bill.append(i)
+        total_rows = len(lst_bill)
+        total_columns = len(lst_bill[0])
+        window9 = tk.Tk()
+        Table(window9)
+        window9.mainloop()
+    User_Pwd = entry7.get()
+    if User_Pwd in New_Password:
+        label7 = tk.Label(window7, text="Correct Password. Access Permitted.", font=("Calisto MT", 14, "bold"))
+        label7.place(x=390, y=330)
+        def destroy7():
+            window7.destroy()
+        tk.Button(window7,text='Update parking',command=lambda:[destroy7(),reserve(mall_name)],font=('Calisto MT', 10, 'bold'),
+                             fg='black',
+                             bg='#78cae3',
+                             padx=20,
+                             pady=20,
+                             activebackground='#78cae3',
+                             activeforeground='black').place(x=500,y=400)
+        tk.Button(window7, text="View info about today's cars", command=view,
+                  font=('Calisto MT', 10, 'bold'),
+                  fg='black',
+                  bg='#78cae3',
+                  padx=20,
+                  pady=20,
+                  activebackground='#78cae3',
+                  activeforeground='black').place(x=800, y=400)
+    else:
+        label7 = tk.Label(window7, text="Wrong Password. Please try again.", font=("Calisto MT", 14 ,"bold"))
+        label7.place(x=390, y=330)
+
+
+def Password(entry1):
+    PWD_MASTER = "HK!RK!"
+    x = entry1.get()
+
+    def LABEL():
+
+        label = tk.Label(window2, text="This is New Label text", font=('Calisto MT', 14 ,'bold'))
+        label.place(x=390, y=330)
+        if x == PWD_MASTER:
+            OUT = "Correct Password. Access permitted."
+            label.config(text=OUT)
+            Enter_Mall_Name()
+        else:
+            OUT1 = "Wrong Password. Please try again."
+            label.config(text=OUT1)
+    LABEL()
+
+
+def reserve(mall):
+    window7 = tk.Tk()
+    window7.geometry('2000x1000')
+    window7.title("Reservation Page")
+    window7.config(background='Pink')
+
+    f1 = open(r"C:\Users\Shreya_Rao3055\PycharmProjects\12th grade project\{}.dat".format(mall), 'rb')
+    info_dict = pickle.load(f1)
+
+    top_frame = tk.Frame(window7, background="Pink")
+    top_frame.pack()
+    label = tk.Label(master=top_frame,
+                     text='Reservation Page',
+                     font=('Calisto MT', 40, 'bold'),
+                     fg='black',
+                     bg='light blue',
+                     bd=10,
+                     padx=20,
+                     pady=20)
+    label.pack()
+    middle_frame = tk.Frame(window7, background="Pink")
+    middle_frame.pack()
+
+    num_of_floors = int(info_dict["no_of_floors"])
+    List_of_floors = []
+    DB_frame = tk.Frame(middle_frame, background="Pink")
+    DB_frame.grid(row=1, column=1, rowspan=1, columnspan=1)
+    for i in range(1, num_of_floors + 1):
+        List_of_floors.append(i)
+
+    menu2 = tk.StringVar(DB_frame)
+    menu2.set("Choose Floor No. ")
+    drop = tk.OptionMenu(DB_frame, menu2, *List_of_floors)
+    drop.config(width=50, font=('Calisto MT', 10, 'bold'), fg="black", bg="light blue", activeforeground="blue",
+                activebackground="pink")
+    drop.pack()
+
+    def destroyw():
+        window7.destroy()
+
+    def RB_reserve_frame():
+        RB_frame = tk.Frame(middle_frame, background="Pink")
+        RB_frame.grid(row=0, column=0, rowspan=3, columnspan=1)
+        var = tk.StringVar(RB_frame)
+
+        def submit():
+            global floor_no
+            floor_no = menu2.get()
+            co_ord = '{}'.format(var.get())
+            entry_page = tk.Tk()
+            entry_page.geometry('2000x1000')
+            entry_page.title("12th grade project")
+            entry_page.config(background='Pink')
+
+
+            def submit190():
+                car_number = entrybox.get()
+                entry_time = entrybox1.get()
+                entry_time1 = entry_time + ":00"
+                con = m.connect(username='root', password='#Comeparty05', database='project')
+                f1 = open(r'C:\Users\Shreya_Rao3055\PycharmProjects\12th grade project\{}.dat'.format(mall), 'rb')
+                while 1:
+                    try:
+                        d = pickle.load(f1)
+                        open_time= d['opening time']
+                        close_time = d['closing_time']
+                    except EOFError:
+                        break
+                f1.close()
+                cur = con.cursor()
+                def dest():
+                    entry_page.destroy()
+                    submit()
+                if entry_time< open_time:
+                    tk.Label(entry_page, text="mall opens at {} . Please reserve after the mall opens ".format(open_time), font=('Calisto MT', 40, 'bold'),fg='black', bg='light blue').pack()
+                    tk.Button(entry_page,text='ok',command=dest).pack()
+                elif entry_time >= close_time:
+                    tk.Label(entry_page, text="mall closes at {}".format(close_time), font=('Calisto MT', 40, 'bold'),fg='black', bg='light blue').pack()
+                    tk.Button(entry_page, text='ok', command=dest).pack()
+                else:
+                    string1 = "insert into {} (Date , car_number,Co_ordinates ,Entry_Time , Exit_Time ) values (NULL, '{}','{}','{}',NULL);".format(mall, car_number, co_ord, entry_time1)
+                    string3 = "insert into Occupation_{} (car_number,occupied) values('{}','{}');".format(mall, car_number,co_ord)
+                    cur.execute(string3)
+                    cur.execute(string1)
+                    con.commit()
+                    con.close()
+                    def destroy190():
+                        entry_page.destroy()
+
+                    label190 = tk.Label(entry_page, text="Thankyou for choosing {},".format(mall),font=('Calisto MT', 40, 'bold'),fg='black',bg='light blue')
+                    label190.pack()
+                    label191 = tk.Label(entry_page, text="Your billing starts from {}".format(entry_time1),fg='black',bg='light blue',font=('Calisto MT', 40, 'bold'))
+                    label191.pack()
+                    label192 = tk.Label(entry_page, text="Please visit again :)",fg='black',bg='light blue',font=('Calisto MT', 40, 'bold'))
+                    label192.pack()
+                    button190 = tk.Button(entry_page, text="back to main page", command=lambda: [destroy190(), destroyw(), main_page()])
+                    button190.pack()
+
+            tk.Label(entry_page, text='Confirm your parking',font=('Calisto MT', 40, 'bold'),bg='light blue').pack()
+            tk.Label(entry_page, text='60 rupees for 1 hr \n 1 rupee per minute \n +18 rs gst fixed', font=('Calisto MT', 40, 'bold'), bg='light blue').pack()
+            tk.Label(entry_page, text='Enter car number',font=('Calisto MT', 40, 'bold'),bg='light blue').pack()
+            entrybox = tk.Entry(entry_page,font=('Calisto MT', 40, 'bold'))
+            entrybox.pack()
+            tk.Label(entry_page, text='Entry time in 24 hour format',font=('Calisto MT', 40, 'bold'),bg='light blue').pack()
+            entrybox1 = tk.Entry(entry_page,font=('Calisto MT', 40, 'bold'))
+            entrybox1.pack()
+            button = tk.Button(entry_page, text='submit', command=lambda:[submit190()])
+            button.pack()
+
+        con = m.connect(username='root', password='#Comeparty05', database='project')
+        cur = con.cursor()
+        string1 = "select * from Occupation_{};".format(mall)
+        cur.execute(string1)
+        list_from_Occupation = cur.fetchall()
+        con.close()
+        Occupied_coord = []
+        for k in list_from_Occupation:
+            if k[1][0] == menu2.get():
+                Occupied_coord.append(k[1])
+        f1 = open(r'C:\Users\Shreya_Rao3055\PycharmProjects\12th grade project\{}.dat'.format(mall), 'rb')
+        while 1:
+            try:
+                d = pickle.load(f1)
+                rows = d['no_of_rows']
+                columns = d['no_of_columns']
+            except EOFError:
+                break
+        f1.close()
+        rows = int(rows)
+        columns = int(columns)
+
+        slots_dict = {}
+        for i in range(1, rows + 1):
+            for j in range(1, columns + 1):
+                a = tk.Radiobutton(RB_frame, text='{},{}'.format(i, j), variable=var,value='{}|{},{}'.format(menu2.get(), i, j),indicatoron=0)
+                a.grid(row=i, column=j)
+                slots_dict['{}|{},{}'.format(menu2.get(), i, j)] = a
+        for n in Occupied_coord:
+            r_b = slots_dict[n]
+            r_b.config(state='disabled')
+
+        bottom_frame = tk.Frame(window7, background="Pink")
+        bottom_frame.pack()
+        button = tk.Button(bottom_frame, text='submit', command=submit)
+        button.grid(row=rows+1,column=columns)
+
+    submit_drop_but = tk.Button(DB_frame, text='submit', command=RB_reserve_frame)
+    submit_drop_but.pack()
+    home= tk.Button(DB_frame,text='Back to main page',command=lambda:[destroyw(),main_page()])
+    home.pack()
+
+    window7.mainloop()
+
+
+def bill():
+    global menu11
+    window8 = tk.Tk()
+    window8.geometry("2000x1000")
+    window8.title("Choose Mall Using Dropdown")
+    window8.config(background="pink")
+    label_bill = tk.Label(window8, text="      Billing     ",
+                          font=('Calisto MT', 48, 'bold'),
+                          fg='black',
+                          bg='light blue',
+                          bd=10,
+                          padx=20,
+                          pady=20)
+    label_bill.pack()
+    path1()
+    menu11 = tk.StringVar(window8)  # creating dropdown menu
+    menu11.set("Choose Mall")
+    if mall_list != []:
+        drop = tk.OptionMenu(window8, menu11, *mall_list)
+        drop.config(width=50, font=('Calisto MT', 10, 'bold'), fg="black", bg="light blue", activeforeground="blue",
+                    activebackground="pink")
+        drop.pack()
+        label_bill2 = tk.Label(window8, text="Enter Car Number to view bill",
+                               font=('Calisto MT', 20, 'bold'),
+                               fg='black',
+                               bg='light blue',
+                               bd=10,
+                               padx=20,
+                               pady=20)
+        label_bill2.place(x=350, y=500)
+
+        entry9 = tk.Entry(window8, font=('Calisto MT', 20, "bold"))
+        entry9.place(x=350, y=600)
+    else:
+        Label_mall_empty = tk.Label(window8, text="!No mall data !",
+                                    font=('Calisto MT', 40, 'bold'),
+                                    fg='#ffde08',
+                                    bg='#a10202',
+                                    bd=10,
+                                    padx=20,
+                                    compound='bottom')
+        Label_mall_empty.pack()
+
+    def submit_bill(menu11, entry9):
+        global lst_b
+        mall_chosen_bill = menu11.get()
+        entry_bill2 = entry9.get()
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        current_date = now.date()
+        con = m.connect(username='root', password='#Comeparty05', database='project')
+        cur = con.cursor()
+        carstr='select car_number from occupation_{}'.format(mall_chosen_bill)
+        cur.execute(carstr)
+        car_numbers=cur.fetchall()
+        car_numbers1=[]
+        for i in car_numbers:
+            car_numbers1.append(i[0])
+
+        if entry_bill2 not in car_numbers1:
+            tk.Label(window8,text="please enter valid car number").pack()
+        else:
+            string_ext = "UPDATE  {} SET Exit_Time='{}' WHERE Exit_time is NULL AND car_number='{}';".format(mall_chosen_bill, current_time,entry_bill2)
+            cur.execute(string_ext)
+            string_date = "UPDATE {} SET Date='{}' WHERE car_number='{}';".format(mall_chosen_bill, current_date,entry_bill2)
+            cur.execute(string_date)
+            string = "SELECT Date, occupation_{}.car_number, Entry_Time, Exit_Time FROM {},occupation_{} WHERE occupation_{}.car_number='{}' and {}.car_number='{}' and exit_time='{}' ;".format(
+            mall_chosen_bill,mall_chosen_bill,mall_chosen_bill,mall_chosen_bill,entry_bill2,mall_chosen_bill,entry_bill2,current_time)
+            cur.execute(string)
+            data = cur.fetchall()
+            string1 = "DELETE FROM occupation_{} WHERE car_number='{}'".format(mall_chosen_bill,
+                                                                               entry_bill2, )
+            cur.execute(string1)
+            con.commit()
+            entry_timeHK = data[0][2]
+            Entry_Time = entry_timeHK.split(':')
+            EnTimeLst = []
+            for i in Entry_Time:
+                j = int(i)
+                EnTimeLst.append(j)
+
+            Exit_Time = current_time.split(':')
+            ExTimeLst = []
+            for i in Exit_Time:
+                j = int(i)
+                ExTimeLst.append(j)
+            Lst_Time = []
+            for t in range(2):
+                t1 = ExTimeLst[t] - EnTimeLst[t]
+                if t1 >= 0:
+                    Lst_Time.append(t1)
+                if t1 < 0:
+                    t2 = -t1
+                    Lst_Time.append(t2)
+            cost = 60 * Lst_Time[0] + Lst_Time[1]
+            Bill_Net = cost + 18
+        # 60 rupees for 1 hr , 1 rupee per minute , +18 rs gst fixed
+        class Table:
+            def __init__(self, window9):
+                # code for creating table
+                for i in range(total_rows):
+                    for j in range(total_columns):
+                        self.e = tk.Entry(window9, width=20, fg='blue', font=('Calisto MT', 16, 'bold'))
+                        self.e.grid(row=i, column=j)
+                        self.e.insert(tk.END, lst_bill[i][j])
+                    label_billing = tk.Label(window9, text=("Bill: Rs {}.00 \n Tax: Rs 18.00  \n   TOTAL: {}.00+18.00=Rs {}.00").format(cost, cost,Bill_Net),
+                                                 font=('Calisto MT', 20, 'bold'),
+                                                 fg='black',
+                                                 bg='white',
+                                                 padx=200,
+                                                 pady=20)
+                    label_billing.place(x=150, y=250)
+                    def destroy9():
+                        window9.destroy()
+                    tk.Button(window9,text='OK',command=destroy9).place(x=150, y=450)
+        lst_bill = [("Date", "Car Number", "Entry Time", "Exit Time")]
+        for i in data:
+            lst_bill.append(i)
+        total_rows = len(lst_bill)
+        total_columns = len(lst_bill[0])
+        window9 = tk.Tk()
+        Table(window9)
+        window9.mainloop()
+    Submit_Bill = tk.Button(window8, text="SUBMIT", command=partial(submit_bill,menu11, entry9),
+                            font=('Calisto MT', 15, 'bold'),
+                            fg='black',
+                            bg='light blue')
+    Submit_Bill.place(x=350, y=700)
+
+    def destroy8():
+        window8.destroy()
+    home = tk.Button(window8, text="Home", command=lambda:[destroy8(), main_page()],
+                            font=('Calisto MT', 15, 'bold'),
+                            fg='black',
+                            bg='light blue')
+    home.place(x=500, y=700)
+
+    window8.mainloop()
+
+
+def choose_mall_visitor(mall_list):
+    window4 = tk.Tk()
+    window4.geometry("2000x1000")
+    window4.title("Choose Mall Using Dropdown")
+    window4.config(background="pink")
+    label4 = tk.Label(window4,
+                      text='Choose Mall Using Dropdown',
+                      font=('Calisto MT', 40, 'bold'),
+                      fg='black',
+                      bg='light blue',
+                      bd=10,
+                      padx=20,
+                      pady=20)
+    label4.pack()
+
+    def destroy4():
+        window4.destroy()
+    menu11 = tk.StringVar(window4)  # creating dropdown menu
+    menu11.set("Choose Mall")
+    if mall_list != []:
+        drop = tk.OptionMenu(window4, menu11, *mall_list)
+        drop.config(width=50, font=('Calisto MT', 10, 'bold'), fg="black", bg="light blue", activeforeground="blue",
+                    activebackground="pink")
+        drop.pack()
+    else:
+        Label_mall_empty = tk.Label(window4, text="No mall data",
+                                    font=('Calisto MT', 20, 'bold'),
+                                    fg='black',
+                                    bg='light blue',
+                                    bd=10,
+                                    padx=20,
+                                    compound='bottom')
+        Label_mall_empty.place(x=390, y=450)
+
+    mainpage_button = tk.Button(window4, text='Back to Main Page', command=lambda:[destroy4(),main_page()],
+                                font=('Calisto MT', 15, 'bold'),
+                                fg='black',
+                                bg='light blue')
+    mainpage_button .place(x=300, y=350)
+
+    def OptionsPg1():
+        global mall_chosen
+        mall_chosen = menu11.get()
+        reserve(mall_chosen)
+
+    Submit_button = tk.Button(window4, text="SUBMIT", command=lambda:[destroy4(), OptionsPg1()],
+                              font=('Calisto MT', 15, 'bold'),
+                              fg='black',
+                              bg='light blue')
+    Submit_button.place(x=900, y=350)
+    window4.mainloop()
+
+
+def mall_info_entrypage(mall_name):
+    lst = ["no_of_floors", "no_of_rows", "no_of_columns", 'opening time', "closing_time"]
+    window3 = tk.Tk()
+    window3.geometry("2000x1000")
+    window3.title("Mall Input page")
+    window3.config(background="pink")
+    tk.Label(window3,text="Enter mall information",bg='light blue',font=('Calisto MT', 48, 'bold')).pack()
+    entries = []
+    counter = 0
+
+    for i in range(len(lst)):
+        tk.Label(window3, text="enter {}".format(lst[i]), font=('Calisto MT', 10, 'bold'), fg='black',
+                 bg='light blue').place(x=350, y=150 + counter)
+        inputtxt = tk.Entry(window3)
+        inputtxt.place(x=500, y=150 + counter)
+        entries.append(inputtxt)
+        counter += 100
+
+    def submit_mall_dict():
+        f1 = open(r"C:\Users\Shreya_Rao3055\PycharmProjects\12th grade project\{}.dat".format(mall_name), 'ab')
+        dictionary = {}
+        for entry in entries:
+            idx = entries.index(entry)
+            value = entry.get()
+            dictionary[lst[idx]] = value
+        pickle.dump(dictionary, f1)
+        con = m.connect(username='root', password='#Comeparty05', database='project')
+        cur = con.cursor()
+        string = "CREATE TABLE {} (Date date, car_number varchar(15) ,Co_ordinates longtext,Entry_Time varchar(10) NOT NULL, Exit_Time varchar(10));".format(mall_name)
+        string2 = "create table Occupation_{} (car_number varchar(15),occupied varchar(15));".format(mall_name)
+        cur.execute(string)
+        cur.execute(string2)
+        con.commit()
+        con.close()
+        f1.close()
+        tk.Label(window3,text="mall added",bg='light blue').place(x=500,y=600)
+
+    def destroy3():
+        window3.destroy()
+    submit=tk.Button(window3, text='submit', command=submit_mall_dict)
+    submit.place(x=700, y=550)
+    mainpage_button = tk.Button(window3, text='Back to Main Page', command=lambda:[destroy3(),main_page()])
+    mainpage_button.place(x=500, y=700)
+    path1()
+    window3.mainloop()
+
+
+def submit_entry(entry):
+    def Emp_Password_Input(mall_name):
+        global window7
+        window7 = tk.Tk()
+        window7.geometry("2000x1000")
+        window7.title("Enter Employee Password to access existing Mall Details")
+        window7.config(background="pink")
+        label7 = tk.Label(window7, text="Enter Employee Password to access existing Mall Details",
+                          font=('Calisto MT', 28, "bold"),
+                          fg="black",
+                          bg="light blue",
+                          bd=10,
+                          padx=20,
+                          pady=20)
+        label7.place(x=350, y=50)
+        entry7 = tk.Entry(window7, font=('Calisto MT', 40, "bold"), show="*")
+        entry7.place(x=390, y=200)
+        submit_button7 = tk.Button(window7, text="Submit", command=lambda: [Emp_Password(mall_name, entry7)])
+        submit_button7.place(x=390, y=500)
+        def destroy71():
+            window7.destroy()
+        home =tk.Button(window7, text="Back to home page", command=lambda: [destroy71(),main_page()])
+        home.place(x=690, y=500)
+
+    global mall_name
+    mall_name = entry
+    isFile = os.path.isfile(r"C:\Users\Shreya_Rao3055\PycharmProjects\12th grade project\{}.dat".format(mall_name))  # change location
+    if isFile == True:
+        Emp_Password_Input(mall_name)
+    else:
+        mall_info_entrypage(mall_name)
+
+
+def choose_mall_for_employee():
+    def Check_Pwd():
+        global window2
+        window2 = tk.Tk()
+        window2.geometry("2000x1000")
+        window2.title("Enter Mall name to use code:")
+        window2.config(background="pink")
+        label1 = tk.Label(window2, text="Enter Master Password to view/add Mall details",
+                          font=('Calisto MT', 30, 'bold'),
+                          fg='black',
+                          bg='light blue',
+                          bd=10,
+                          padx=20,
+                          pady=20)
+        label1.place(x=350, y=50)
+        entry1 = tk.Entry(window2, font=('Calisto MT', 40, 'bold'), show='*')
+        entry1.place(x=390, y=200)
+        submit_button1 = tk.Button(window2, text='Submit', command=partial(Password, entry1))
+        submit_button1.place(x=390, y=300)
+
+    Check_Pwd()
+
+
+def Enter_Mall_Name():
+    label2 = tk.Label(window2,
+                      text='Enter Mall name to use code',
+                      font=('Calisto MT', 40, 'bold'),
+                      fg='black',
+                      bg='light blue',
+                      bd=10,
+                      padx=20,
+                      compound='bottom')
+    label2.place(x=350, y=450)
+    entry2 = tk.Entry(window2, font=('Calisto MT', 40, 'bold'))
+    entry2.place(x=390, y=600)
+
+    def destroy2():
+        window2.destroy()
+
+    def submit_multiple():
+        entry=entry2.get()
+        destroy2()
+        submit_entry(entry)
+    submit_button = tk.Button(window2, text='Submit', command=submit_multiple)
+    submit_button.place(x=390, y=700)
+
+
+# main window is from here
+def main_page():
+    window = tk.Tk()
+    window.geometry('2000x1000')
+    window.title("12th grade project")
+    window.config(background='Pink')
+    # img = tk.PhotoImage(file=r"car.png")
+    # window.iconphoto(True, img)
+    label = tk.Label(window,
+                     text='Parking Reservation',
+                     font=('Calisto MT', 40, 'bold'),
+                     fg='black',
+                     bg='light blue',
+                     bd=10,
+                     padx=20,
+                     pady=20)
+    label.pack()
+
+    def destroy():
+        window.destroy()
+
+    def multiple():
+        destroy()
+        path1()
+        choose_mall_visitor(mall_list)
+    visitor_button = tk.Button(window,
+                               text='Visitor',
+                               font=('Calisto MT', 40, 'bold'),
+                               fg='black',
+                               bg='#78cae3',
+                               padx=20,
+                               pady=20,
+                               activebackground='#78cae3',
+                               activeforeground='black',
+                               command=multiple)
+    visitor_button.place(x=100, y=300)
+
+    staff_button = tk.Button(window,
+                             text='Staff',
+                             font=('Calisto MT', 40, 'bold'),
+                             fg='black',
+                             bg='#78cae3',
+                             padx=20,
+                             pady=20,
+                             activebackground='#78cae3',
+                             activeforeground='black',
+                             command=lambda: [destroy(), choose_mall_for_employee()])
+    staff_button.place(x=1100, y=300)
+
+    View_bill_button = tk.Button(window,
+                                 text='View Bill',
+                                 font=('Calisto MT', 40, 'bold'),
+                                 fg='black',
+                                 bg='#78cae3',
+                                 padx=20,
+                                 pady=20,
+                                 activebackground='#78cae3',
+                                 activeforeground='black',
+                                 command=lambda: [destroy(), bill()])
+    View_bill_button.place(x=550, y=300)
+    window.mainloop()
+
+
+main_page()
