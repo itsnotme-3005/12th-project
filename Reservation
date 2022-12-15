@@ -6,6 +6,7 @@ import mysql.connector as m
 import tkinter as tk
 from pathlib import Path
 
+
 # MASTER PASSWORD= HK!RK!   (All Caps)
 # EMPLOYEE PASSWORD= Emp1MallName/Emp2MallName/Emp3MallName/Emp4MallName/Emp5MallName
 # (Note: "Emp" is in lowercase but while typing, (due to the font), everything looks CAPS
