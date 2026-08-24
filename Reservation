@@ -162,7 +162,7 @@ def reserve(mall):
                 car_number = entrybox.get()
                 entry_time = entrybox1.get()
                 entry_time1 = entry_time + ":00"
-                con = m.connect(username='root', password='#Comeparty05', database='project')
+                con = m.connect(username='root', password='password', database='project')
                 f1 = open(r'C:\Users\Shreya_Rao3055\PycharmProjects\12th grade project\{}.dat'.format(mall), 'rb')
                 while 1:
                     try:
@@ -212,7 +212,7 @@ def reserve(mall):
             button = tk.Button(entry_page, text='submit', command=lambda:[submit190()])
             button.pack()
 
-        con = m.connect(username='root', password='#Comeparty05', database='project')
+        con = m.connect(username='root', password='password', database='project')
         cur = con.cursor()
         string1 = "select * from Occupation_{};".format(mall)
         cur.execute(string1)
@@ -307,7 +307,7 @@ def bill():
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
         current_date = now.date()
-        con = m.connect(username='root', password='#Comeparty05', database='project')
+        con = m.connect(username='root', password='password', database='project')
         cur = con.cursor()
         carstr='select car_number from occupation_{}'.format(mall_chosen_bill)
         cur.execute(carstr)
