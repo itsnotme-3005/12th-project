@@ -16,13 +16,14 @@ mall_list = []
 
 def path1():
     global mall_list
-    path = r"C:\Users\Shreya_Rao3055\PycharmProjects\12th grade project"  # path=directories
+    #add project path here 
+    path = r"path"  # path=directories 
     mall_list1 = []
     directories = os.listdir(path)  # A list
     fileExt = r".dat"
     for file in directories:
         if file.endswith(fileExt):
-            path1 = r"C:\Users\Shreya_Rao3055\PycharmProjects\12th grade project\{}".format(file)
+            path1 = r"path\{}".format(file) #replace path with actual path 
             x = Path(path1).stem  # Removes the ".dat" (file extension)
             mall_list1.append(x)
     mall_list = mall_list1
@@ -109,7 +110,7 @@ def reserve(mall):
     window7.title("Reservation Page")
     window7.config(background='Pink')
 
-    f1 = open(r"C:\Users\Shreya_Rao3055\PycharmProjects\12th grade project\{}.dat".format(mall), 'rb')
+    f1 = open(r"path\{}.dat".format(mall), 'rb')
     info_dict = pickle.load(f1)
 
     top_frame = tk.Frame(window7, background="Pink")
@@ -163,7 +164,7 @@ def reserve(mall):
                 entry_time = entrybox1.get()
                 entry_time1 = entry_time + ":00"
                 con = m.connect(username='root', password='password', database='project')
-                f1 = open(r'C:\Users\Shreya_Rao3055\PycharmProjects\12th grade project\{}.dat'.format(mall), 'rb')
+                f1 = open(r'path\{}.dat'.format(mall), 'rb')
                 while 1:
                     try:
                         d = pickle.load(f1)
@@ -222,7 +223,7 @@ def reserve(mall):
         for k in list_from_Occupation:
             if k[1][0] == menu2.get():
                 Occupied_coord.append(k[1])
-        f1 = open(r'C:\Users\Shreya_Rao3055\PycharmProjects\12th grade project\{}.dat'.format(mall), 'rb')
+        f1 = open(r'path\{}.dat'.format(mall), 'rb')
         while 1:
             try:
                 d = pickle.load(f1)
@@ -469,14 +470,14 @@ def mall_info_entrypage(mall_name):
         counter += 100
 
     def submit_mall_dict():
-        f1 = open(r"C:\Users\Shreya_Rao3055\PycharmProjects\12th grade project\{}.dat".format(mall_name), 'ab')
+        f1 = open(r"path\{}.dat".format(mall_name), 'ab')
         dictionary = {}
         for entry in entries:
             idx = entries.index(entry)
             value = entry.get()
             dictionary[lst[idx]] = value
         pickle.dump(dictionary, f1)
-        con = m.connect(username='root', password='#Comeparty05', database='project')
+        con = m.connect(username='root', password='password', database='project')
         cur = con.cursor()
         string = "CREATE TABLE {} (Date date, car_number varchar(15) ,Co_ordinates longtext,Entry_Time varchar(10) NOT NULL, Exit_Time varchar(10));".format(mall_name)
         string2 = "create table Occupation_{} (car_number varchar(15),occupied varchar(15));".format(mall_name)
@@ -523,7 +524,7 @@ def submit_entry(entry):
 
     global mall_name
     mall_name = entry
-    isFile = os.path.isfile(r"C:\Users\Shreya_Rao3055\PycharmProjects\12th grade project\{}.dat".format(mall_name))  # change location
+    isFile = os.path.isfile(r"path\{}.dat".format(mall_name))  # change location
     if isFile == True:
         Emp_Password_Input(mall_name)
     else:
